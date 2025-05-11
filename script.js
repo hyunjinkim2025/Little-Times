@@ -3,18 +3,27 @@ const album = document.getElementById('album');
 const title = document.getElementById('albumTitle');
 const childNameInput = document.getElementById('childName');
 
+// 제목에 이름 반영
 childNameInput.addEventListener('input', () => {
   const name = childNameInput.value.trim();
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
 });
 
+// face-api 모델 로드
 async function loadModels() {
   await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
   await faceapi.nets.ageGenderNet.loadFromUri('./models');
 }
 
+// 이미지 업로드 핸들링
 uploadInput.addEventListener('change', async (event) => {
+  if (!window.faceapi) {
+    alert("face-api.js가 아직 로드되지 않았어요. 잠시 후 다시 시도해 주세요.");
+    return;
+  }
+
   await loadModels();
+
   const files = Array.from(event.target.files);
   if (files.length > 30) {
     alert("사진은 최대 30장까지 업로드할 수 있어요.");
@@ -30,7 +39,9 @@ uploadInput.addEventListener('change', async (event) => {
         return null;
       }
       const img = await loadImage(file);
-      const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+      const result = await faceapi
+        .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
+        .withAgeAndGender();
       return result ? { file, age: result.age } : null;
     })
   );
@@ -40,15 +51,15 @@ uploadInput.addEventListener('change', async (event) => {
     .sort((a, b) => a.age - b.age)
     .forEach(({ file }) => {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const card = document.createElement('div');
         card.className = 'card';
 
         const img = document.createElement('img');
         img.src = e.target.result;
-        img.style.maxHeight = "320px";
         img.style.width = "100%";
         img.style.objectFit = "contain";
+        img.style.maxHeight = "320px";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -60,6 +71,7 @@ uploadInput.addEventListener('change', async (event) => {
             caption.innerText = "";
           }
         });
+
         caption.addEventListener('blur', () => {
           if (caption.innerText.trim() === "") {
             caption.innerText = "사진의 추억을 자유롭게 기록해보세요.";
@@ -74,6 +86,7 @@ uploadInput.addEventListener('change', async (event) => {
     });
 });
 
+// 이미지 객체 생성
 function loadImage(file) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -82,45 +95,44 @@ function loadImage(file) {
   });
 }
 
+// PDF 다운로드
 function downloadPDF() {
-  const albumContent = document.getElementById("album").cloneNode(true);
-  albumContent.style.display = "block";
-  albumContent.style.width = "100%";
-  albumContent.style.padding = "1rem";
+  html2canvas(document.getElementById('album'), {
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY
+  }).then(canvas => {
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
 
-  albumContent.querySelectorAll("img").forEach(img => {
-    img.style.maxHeight = "320px";
-    img.style.width = "100%";
-    img.style.objectFit = "contain";
-  });
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
 
-  albumContent.querySelectorAll(".caption").forEach(caption => {
-    caption.style.whiteSpace = "normal";
-  });
+    while (heightLeft > 0) {
+      position -= pageHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
 
-  const wrapper = document.createElement("div");
-  wrapper.appendChild(albumContent);
-  document.body.appendChild(wrapper);
-
-  html2pdf().set({
-    margin: 0.3,
-    filename: '리틀타임즈_성장앨범.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollY: 0,
-      allowTaint: true
-    },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).from(wrapper).save().then(() => {
-    document.body.removeChild(wrapper);
+    pdf.save('리틀타임즈_성장앨범.pdf');
   });
 }
 
+// 공유 링크 복사
 function copyShareLink() {
   const link = window.location.href;
-  navigator.clipboard.writeText(link)
-    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
-    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link)
+      .then(() => alert("공유 링크가 복사되었습니다! 친구에게 전달해 보세요."))
+      .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
+  } else {
+    alert("브라우저가 클립보드 복사를 지원하지 않아요.");
+  }
 }
