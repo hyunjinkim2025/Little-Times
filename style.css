@@ -1,40 +1,27 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-image: url('https://cdn.pixabay.com/photo/2020/03/18/12/39/leaf-4942108_1280.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-color: #fefbf6;
-  padding: 2rem;
-  color: #444;
-}
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
+  background: linear-gradient(to bottom, #fdfcf9, #f5f2ec);
+  color: #3b3a36;
 }
 .header h1 {
-  font-size: 1.8rem;
-  color: #a97c50;
-}
-.input-group {
+  font-size: 2rem;
+  color: #8a6d54;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
-input[type="file"], input[type="text"] {
-  margin: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  border: 1px solid #ccc;
+input, button {
+  font-family: inherit;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.8rem;
+  margin: 0.3rem;
 }
 button {
-  padding: 0.5rem 1rem;
-  margin: 0.5rem;
-  background-color: #ffe9d2;
+  background-color: #ffe9d5;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
 }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* ✅ 2단 */
