@@ -104,10 +104,15 @@ function downloadPDF() {
   }).then(canvas => {
     const imgData = canvas.toDataURL('image/jpeg', 1.0);
     const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const pageWidth = 210;
-    const pageHeight = 297;
+
+    const pageWidth = 210; // A4 width in mm
+    const pageHeight = 297; // A4 height in mm
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
     const imgWidth = pageWidth;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
+    const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
+
     let heightLeft = imgHeight;
     let position = 0;
 
@@ -124,6 +129,7 @@ function downloadPDF() {
     pdf.save('리틀타임즈_성장앨범.pdf');
   });
 }
+
 
 // 공유 링크 복사
 function copyShareLink() {
