@@ -81,37 +81,45 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const albumContent = album.cloneNode(true);
-  albumContent.style.display = "block";
-  albumContent.style.width = "800px";
-  albumContent.style.padding = "1rem";
+  const albumOriginal = document.getElementById("album");
+  const clone = albumOriginal.cloneNode(true);
+  clone.style.width = "800px";
+  clone.style.padding = "20px";
+  clone.style.background = "#ffffff";
 
-  albumContent.querySelectorAll("img").forEach(img => {
+  // 스타일 일괄 적용
+  clone.querySelectorAll("img").forEach(img => {
     img.style.width = "100%";
     img.style.height = "auto";
+    img.style.maxHeight = "auto";
     img.style.objectFit = "contain";
   });
 
-  albumContent.querySelectorAll(".caption").forEach(caption => {
-    caption.style.whiteSpace = "normal";
+  clone.querySelectorAll(".card").forEach(card => {
+    card.style.pageBreakInside = "avoid";
+    card.style.marginBottom = "20px";
   });
 
-  const wrapper = document.createElement("div");
-  wrapper.appendChild(albumContent);
-  document.body.appendChild(wrapper);
+  const container = document.createElement("div");
+  container.appendChild(clone);
+  document.body.appendChild(container);
 
-  html2pdf().set({
-    margin: 0.3,
-    filename: '리틀타임즈_성장앨범.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollY: 0,
-      allowTaint: true
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(wrapper).save().then(() => {
-    document.body.removeChild(wrapper);
-  });
+  html2pdf()
+    .set({
+      margin: 0,
+      filename: "리틀타임즈_성장앨범.pdf",
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        scrollY: 0
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    })
+    .from(clone)
+    .save()
+    .then(() => {
+      document.body.removeChild(container);
+    });
 }
+
