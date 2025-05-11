@@ -23,7 +23,7 @@ function generateCaption(age) {
     `[#단계] 매일 자라는 너의 하루`
   ];
   const text = templates[Math.floor(Math.random() * templates.length)];
-  return text.replace('#단계', `${rounded}세 추정`);
+  return text.replace('#단계', `${rounded}세`);
 }
 
 uploadInput.addEventListener('change', async (event) => {
