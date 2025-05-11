@@ -1,47 +1,110 @@
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(to bottom, #f8f3f0, #fdfaf7);
-  padding: 2rem;
-  color: #444;
+const uploadInput = document.getElementById('uploadInput');
+const album = document.getElementById('album');
+const title = document.getElementById('albumTitle');
+const childNameInput = document.getElementById('childName');
+
+childNameInput.addEventListener('input', () => {
+  const name = childNameInput.value.trim();
+  title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
+});
+
+async function loadModels() {
+  await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
+  await faceapi.nets.ageGenderNet.loadFromUri('./models');
 }
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
+
+function generateCaption(age) {
+  const rounded = Math.round(age);
+  const templates = [
+    `[#단계] 오늘도 웃음이 가득한 날`,
+    `[#단계] 작은 기적이 피어난 하루`,
+    `[#단계] 맑은 눈망울, 깊은 감성`,
+    `[#단계] 환한 웃음 속 따스한 기억`,
+    `[#단계] 매일 자라는 너의 하루`
+  ];
+  const text = templates[Math.floor(Math.random() * templates.length)];
+  return text.replace('#단계', `${rounded}세 추정`);
 }
-.header h1 {
-  font-size: 1.8rem;
-  color: #a97c50;
+
+uploadInput.addEventListener('change', async (event) => {
+  await loadModels();
+  const files = Array.from(event.target.files);
+
+  if (files.length > 30) {
+    alert("사진은 최대 30장까지 업로드할 수 있어요.");
+    return;
+  }
+
+  album.innerHTML = '';
+
+  const imageAges = await Promise.all(
+    files.map(async (file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
+        return null;
+      }
+      const img = await loadImage(file);
+      const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+      return result ? { file, age: result.age } : null;
+    })
+  );
+
+  imageAges
+    .filter(Boolean)
+    .sort((a, b) => a.age - b.age)
+    .forEach(({ file, age }) => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const img = document.createElement('img');
+        img.src = e.target.result;
+
+        const caption = document.createElement('div');
+        caption.className = 'caption';
+        caption.innerText = generateCaption(age);
+        caption.setAttribute("contenteditable", "true");
+
+        card.appendChild(img);
+        card.appendChild(caption);
+        album.appendChild(card);
+      };
+      reader.readAsDataURL(file);
+    });
+});
+
+function loadImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.src = URL.createObjectURL(file);
+  });
 }
-.input-group {
-  text-align: center;
-  margin-bottom: 1rem;
+
+function downloadPDF() {
+  const element = document.body;
+  html2pdf().set({
+    margin: 0.5,
+    filename: '리틀타임즈_성장앨범.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }).from(element).save();
 }
-input[type="file"], input[type="text"] {
-  margin: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-.card {
-  background-color: #fffdf8;
-  border: 1px solid #f0e6dc;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
-  text-align: center;
-}
-.card img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-.caption {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #666;
+
+function shareAlbum() {
+  const url = window.location.href;
+  const text = encodeURIComponent("리틀타임즈 앨범을 구경해보세요!");
+  const encodedURL = encodeURIComponent(url);
+  const shareLinks = [
+    `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
+    `https://twitter.com/intent/tweet?url=${encodedURL}&text=${text}`,
+    `https://story.kakao.com/share?url=${encodedURL}`
+  ];
+  const message = "공유할 플랫폼을 선택하세요:\\n1. 페이스북\\n2. 트위터\\n3. 카카오스토리";
+  const choice = prompt(message);
+  if (choice === "1") window.open(shareLinks[0], "_blank");
+  if (choice === "2") window.open(shareLinks[1], "_blank");
+  if (choice === "3") window.open(shareLinks[2], "_blank");
 }
