@@ -23,15 +23,17 @@ uploadInput.addEventListener('change', async (event) => {
 
   album.innerHTML = '';
 
-  const imageAges = await Promise.all(files.map(async (file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
-      return null;
-    }
-    const img = await loadImage(file);
-    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-    return result ? { file, age: result.age } : null;
-  }));
+  const imageAges = await Promise.all(
+    files.map(async (file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
+        return null;
+      }
+      const img = await loadImage(file);
+      const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+      return result ? { file, age: result.age } : null;
+    })
+  );
 
   imageAges
     .filter(Boolean)
@@ -78,30 +80,29 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  html2canvas(document.getElementById('album'), {
-    scale: 2,
-    useCORS: true,
-    scrollY: -window.scrollY
-  }).then(canvas => {
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const pageWidth = 210;
-    const pageHeight = 297;
-    const imgWidth = pageWidth;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
+  const printArea = document.createElement("div");
+  printArea.style.padding = "1rem";
+  printArea.innerHTML = document.getElementById("album").innerHTML;
+  document.body.appendChild(printArea);
 
-    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    pdf.save('리틀타임즈_성장앨범.pdf');
+  html2pdf().set({
+    margin: 0.3,
+    filename: '리틀타임즈_성장앨범.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }).from(printArea).save().then(() => {
+    document.body.removeChild(printArea);
   });
+}
+
+function copyShareLink() {
+  const link = window.location.href;
+  navigator.clipboard.writeText(link)
+    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
+    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
