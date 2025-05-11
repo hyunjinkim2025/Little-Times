@@ -52,7 +52,6 @@ uploadInput.addEventListener('change', async (event) => {
         caption.contentEditable = true;
         caption.innerText = "사진의 추억을 자유롭게 기록해보세요.";
 
-        // 자동 제거/복원 기능
         caption.addEventListener('focus', () => {
           if (caption.innerText === "사진의 추억을 자유롭게 기록해보세요.") {
             caption.innerText = "";
@@ -84,7 +83,6 @@ function downloadPDF() {
   const printArea = document.createElement("div");
   printArea.style.padding = "1rem";
   printArea.innerHTML = document.getElementById("album").innerHTML;
-
   document.body.appendChild(printArea);
 
   html2pdf().set({
