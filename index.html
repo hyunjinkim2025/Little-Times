@@ -2,20 +2,20 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>리틀타임즈 성장 앨범</title>
+  <title>리틀타임즈 성장 앨범 생성기</title>
   <link rel="stylesheet" href="style.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
   <div class="header">
     <h1 id="albumTitle">리틀타임즈, 아이의 성장앨범</h1>
     <div class="input-group">
-      <input type="text" id="childName" placeholder="아이 이름 입력" />
+      <input type="text" id="childName" placeholder="아이 이름 입력 (예: 지우)" />
       <input type="file" id="uploadInput" multiple accept="image/*" />
       <button onclick="downloadPDF()">PDF 저장</button>
+      <button onclick="copyShareLink()">링크 복사</button>
     </div>
   </div>
   <div id="album" class="grid"></div>
