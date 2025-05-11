@@ -18,12 +18,13 @@
 
   <div id="album" class="grid"></div>
 
-  <!-- ✅ 필수 라이브러리: 순서 매우 중요 -->
+  <!-- ✅ 필수 라이브러리: 순서와 버전 중요 -->
   <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- ✅ 전역에서 jsPDF 사용 가능하도록 legacy 버전으로 교체 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.legacy.min.js"></script>
 
-  <!-- ✅ 사용자 스크립트 마지막에 위치 -->
+  <!-- ✅ 사용자 정의 스크립트 마지막에 배치 -->
   <script src="script.js"></script>
 </body>
 </html>
