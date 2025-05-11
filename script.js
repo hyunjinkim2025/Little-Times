@@ -106,25 +106,28 @@ function downloadPDF() {
     const imgData = canvas.toDataURL('image/jpeg', 1.0);
     const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
 
-    const pageWidth = 210;
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
     const pageHeight = 297;
+    const pageWidth = 210;
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgRatio = imgProps.width / imgProps.height;
+    const scale = pageHeight / canvasHeight;
+    const imgWidth = canvasWidth * scale;
+    const imgHeight = pageHeight;
 
-    const pdfWidth = pageWidth;
-    const pdfHeight = pdfWidth / imgRatio;
+    const x = (pageWidth - imgWidth) / 2;
 
     let position = 0;
-    let heightLeft = pdfHeight;
+    let heightLeft = imgHeight;
 
-    pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, 'JPEG', x, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
     while (heightLeft > 0) {
       position -= pageHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'JPEG', x, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
     }
 
