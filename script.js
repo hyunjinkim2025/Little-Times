@@ -81,14 +81,14 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const albumContent = album.cloneNode(true);
+  const albumContent = document.getElementById("album").cloneNode(true);
   albumContent.style.display = "block";
-  albumContent.style.width = "800px";
+  albumContent.style.width = "100%";
   albumContent.style.padding = "1rem";
 
   albumContent.querySelectorAll("img").forEach(img => {
+    img.style.maxHeight = "320px";
     img.style.width = "100%";
-    img.style.height = "auto";
     img.style.objectFit = "contain";
   });
 
