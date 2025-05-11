@@ -81,23 +81,37 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const element = document.body.cloneNode(true);
-  element.querySelectorAll("input, button").forEach(el => el.remove());
+  const albumContent = document.getElementById("album").cloneNode(true);
+  albumContent.style.display = "block";
+  albumContent.style.width = "100%";
+  albumContent.style.padding = "1rem";
+
+  albumContent.querySelectorAll("img").forEach(img => {
+    img.style.maxHeight = "320px";
+    img.style.width = "100%";
+    img.style.objectFit = "contain";
+  });
+
+  albumContent.querySelectorAll(".caption").forEach(caption => {
+    caption.style.whiteSpace = "normal";
+  });
+
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(albumContent);
+  document.body.appendChild(wrapper);
+
   html2pdf().set({
-    margin: 0.2,
+    margin: 0.3,
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
       scale: 2,
+      useCORS: true,
       scrollY: 0,
-      useCORS: true
+      allowTaint: true
     },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).from(element).save();
-}
-function copyShareLink() {
-  const link = window.location.href;
-  navigator.clipboard.writeText(link)
-    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
-    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(wrapper).save().then(() => {
+    document.body.removeChild(wrapper);
+  });
 }
