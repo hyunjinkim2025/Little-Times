@@ -51,9 +51,11 @@ button {
 }
 .card img {
   width: 100%;
-  height: auto;
+  max-height: 250px;
+  object-fit: cover;
   border-radius: 10px;
 }
+
 .caption {
   margin-top: 0.5rem;
   font-size: 0.9rem;
