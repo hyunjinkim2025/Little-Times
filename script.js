@@ -8,12 +8,12 @@ childNameInput.addEventListener('input', () => {
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
 });
 
-async function loadModels() {
-  await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
-  await faceapi.nets.ageGenderNet.loadFromUri('./models');
-}
-
 uploadInput.addEventListener('change', async (event) => {
+  if (!window.faceapi) {
+    alert("face-api.js가 아직 로드되지 않았어요. 잠시 후 다시 시도해 주세요.");
+    return;
+  }
+
   await loadModels();
   const files = Array.from(event.target.files);
   if (files.length > 30) {
@@ -69,6 +69,11 @@ uploadInput.addEventListener('change', async (event) => {
     });
 });
 
+async function loadModels() {
+  await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
+  await faceapi.nets.ageGenderNet.loadFromUri('./models');
+}
+
 function loadImage(file) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -104,4 +109,11 @@ function downloadPDF() {
 
     pdf.save('리틀타임즈_성장앨범.pdf');
   });
+}
+
+function copyShareLink() {
+  const link = window.location.href;
+  navigator.clipboard.writeText(link)
+    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
+    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
