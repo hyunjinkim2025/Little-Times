@@ -85,13 +85,18 @@ function loadImage(file) {
 function downloadPDF() {
   const element = document.body;
   html2pdf().set({
-    margin: 0.5,
+    margin: 0.2,
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
+    html2canvas: {
+      scale: 2,
+      scrollY: 0, // 스크롤로 인한 위치 왜곡 방지
+      useCORS: true
+    },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   }).from(element).save();
 }
+
 
 
 function copyShareLink() {
