@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <title>리틀타임즈 성장 앨범</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <div class="header">
@@ -18,8 +15,15 @@
       <button onclick="copyShareLink()">공유하기</button>
     </div>
   </div>
+
   <div id="album" class="grid"></div>
 
+  <!-- ✅ 필수 라이브러리: 순서 엄청 중요합니다 -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- ✅ 마지막에 사용자 스크립트 로딩 -->
   <script src="script.js"></script>
 </body>
 </html>
