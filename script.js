@@ -94,26 +94,11 @@ function downloadPDF() {
 }
 
 
-function shareAlbum() {
-  const url = window.location.href;
-  const text = encodeURIComponent("리틀타임즈 앨범을 구경해보세요!");
-  const encodedURL = encodeURIComponent(url);
-
-  const options = {
-    "1": `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
-    "2": `https://twitter.com/intent/tweet?url=${encodedURL}&text=${text}`,
-    "3": `https://story.kakao.com/share?url=${encodedURL}`,
-    "페이스북": `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
-    "트위터": `https://twitter.com/intent/tweet?url=${encodedURL}&text=${text}`,
-    "카카오": `https://story.kakao.com/share?url=${encodedURL}`
-  };
-
-  const choice = prompt("공유할 플랫폼을 선택하세요:\\n1. 페이스북\\n2. 트위터\\n3. 카카오스토리");
-  const link = options[choice.trim()];
-  if (link) {
-    window.open(link, "_blank");
-  } else {
-    alert("선택이 잘못되었습니다. 1~3 또는 이름을 정확히 입력해 주세요.");
-  }
+function copyShareLink() {
+  const link = window.location.href;
+  navigator.clipboard.writeText(link)
+    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
+    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
+
 
