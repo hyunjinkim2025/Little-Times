@@ -46,9 +46,6 @@ uploadInput.addEventListener('change', async (event) => {
 
         const img = document.createElement('img');
         img.src = e.target.result;
-        img.style.maxHeight = "320px";
-        img.style.width = "100%";
-        img.style.objectFit = "contain";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -83,24 +80,10 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const albumContent = document.getElementById("album").cloneNode(true);
-  albumContent.style.display = "block";
-  albumContent.style.width = "100%";
-  albumContent.style.padding = "1rem";
-
-  albumContent.querySelectorAll("img").forEach(img => {
-    img.style.maxHeight = "320px";
-    img.style.width = "100%";
-    img.style.objectFit = "contain";
-  });
-
-  albumContent.querySelectorAll(".caption").forEach(caption => {
-    caption.style.whiteSpace = "normal";
-  });
-
-  const wrapper = document.createElement("div");
-  wrapper.appendChild(albumContent);
-  document.body.appendChild(wrapper);
+  const printArea = document.createElement("div");
+  printArea.style.padding = "1rem";
+  printArea.innerHTML = document.getElementById("album").innerHTML;
+  document.body.appendChild(printArea);
 
   html2pdf().set({
     margin: 0.3,
@@ -109,12 +92,11 @@ function downloadPDF() {
     html2canvas: {
       scale: 2,
       useCORS: true,
-      scrollY: 0,
-      allowTaint: true
+      scrollY: 0
     },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).from(wrapper).save().then(() => {
-    document.body.removeChild(wrapper);
+  }).from(printArea).save().then(() => {
+    document.body.removeChild(printArea);
   });
 }
 
