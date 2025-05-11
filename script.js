@@ -81,16 +81,10 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const albumContent = document.getElementById("album").cloneNode(true);
-  albumContent.style.display = "block";
-  albumContent.style.width = "100%";
-  albumContent.style.padding = "1rem";
-
-  albumContent.querySelectorAll("img").forEach(img => {
-    img.style.maxHeight = "320px";
-    img.style.width = "100%";
-    img.style.objectFit = "contain";
-  });
+  const printArea = document.createElement("div");
+  printArea.style.padding = "1rem";
+  printArea.innerHTML = document.getElementById("album").innerHTML;
+  document.body.appendChild(printArea);
 
   albumContent.querySelectorAll(".caption").forEach(caption => {
     caption.style.whiteSpace = "normal";
