@@ -95,4 +95,9 @@ function downloadPDF() {
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   }).from(element).save();
 }
-
+function copyShareLink() {
+  const link = window.location.href;
+  navigator.clipboard.writeText(link)
+    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
+    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
+}
