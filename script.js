@@ -23,17 +23,15 @@ uploadInput.addEventListener('change', async (event) => {
 
   album.innerHTML = '';
 
-  const imageAges = await Promise.all(
-    files.map(async (file) => {
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
-        return null;
-      }
-      const img = await loadImage(file);
-      const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-      return result ? { file, age: result.age } : null;
-    })
-  );
+  const imageAges = await Promise.all(files.map(async (file) => {
+    if (file.size > 5 * 1024 * 1024) {
+      alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
+      return null;
+    }
+    const img = await loadImage(file);
+    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+    return result ? { file, age: result.age } : null;
+  }));
 
   imageAges
     .filter(Boolean)
@@ -46,6 +44,9 @@ uploadInput.addEventListener('change', async (event) => {
 
         const img = document.createElement('img');
         img.src = e.target.result;
+        img.style.maxHeight = "320px";
+        img.style.width = "100%";
+        img.style.objectFit = "contain";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -80,39 +81,17 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const printArea = document.createElement("div");
-  printArea.style.padding = "1rem";
-  printArea.innerHTML = document.getElementById("album").innerHTML;
-  document.body.appendChild(printArea);
-
-  html2pdf().set({
-    margin: 0.3,
-    filename: '리틀타임즈_성장앨범.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollY: 0
-    },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).from(printArea).save().then(() => {
-    document.body.removeChild(printArea);
-  });
-}
-function downloadPDF() {
-  const albumContent = document.getElementById("album").cloneNode(true);
+  const albumContent = album.cloneNode(true);
   albumContent.style.display = "block";
-  albumContent.style.width = "100%";
+  albumContent.style.width = "800px";
   albumContent.style.padding = "1rem";
 
-  // 이미지 사이즈 강제 고정
   albumContent.querySelectorAll("img").forEach(img => {
-    img.style.maxHeight = "320px";
     img.style.width = "100%";
+    img.style.height = "auto";
     img.style.objectFit = "contain";
   });
 
-  // 캡션 줄 바꿈 방지 제거
   albumContent.querySelectorAll(".caption").forEach(caption => {
     caption.style.whiteSpace = "normal";
   });
@@ -131,15 +110,8 @@ function downloadPDF() {
       scrollY: 0,
       allowTaint: true
     },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }).from(wrapper).save().then(() => {
     document.body.removeChild(wrapper);
   });
-}
-
-function copyShareLink() {
-  const link = window.location.href;
-  navigator.clipboard.writeText(link)
-    .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
-    .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
