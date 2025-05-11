@@ -49,8 +49,19 @@ uploadInput.addEventListener('change', async (event) => {
 
         const caption = document.createElement('div');
         caption.className = 'caption';
+        caption.contentEditable = true;
         caption.innerText = "사진의 추억을 자유롭게 기록해보세요.";
-        caption.setAttribute("contenteditable", "true");
+
+        caption.addEventListener('focus', () => {
+          if (caption.innerText === "사진의 추억을 자유롭게 기록해보세요.") {
+            caption.innerText = "";
+          }
+        });
+        caption.addEventListener('blur', () => {
+          if (caption.innerText.trim() === "") {
+            caption.innerText = "사진의 추억을 자유롭게 기록해보세요.";
+          }
+        });
 
         card.appendChild(img);
         card.appendChild(caption);
@@ -69,19 +80,24 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const element = document.body.cloneNode(true);
-  element.querySelectorAll("input, button").forEach(el => el.remove());
+  const printArea = document.createElement("div");
+  printArea.style.padding = "1rem";
+  printArea.innerHTML = document.getElementById("album").innerHTML;
+  document.body.appendChild(printArea);
+
   html2pdf().set({
-    margin: 0.2,
+    margin: 0.3,
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
       scale: 2,
-      scrollY: 0,
-      useCORS: true
+      useCORS: true,
+      scrollY: 0
     },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  }).from(element).save();
+  }).from(printArea).save().then(() => {
+    document.body.removeChild(printArea);
+  });
 }
 
 function copyShareLink() {
