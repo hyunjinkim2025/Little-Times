@@ -1,57 +1,63 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: #fdfcf9;
+  background: linear-gradient(to bottom, #fdfcf9, #f5f2ec);
   padding: 2rem;
-  margin: 0;
+  color: #3b3a36;
 }
 .header {
   text-align: center;
   margin-bottom: 2rem;
 }
-.input-group {
-  margin-top: 1rem;
+.header h1 {
+  font-size: 2rem;
+  color: #8a6d54;
 }
-input[type="text"], input[type="file"] {
-  padding: 0.4rem 0.8rem;
+.input-group {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+input[type="file"], input[type="text"] {
   margin: 0.5rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
   border: 1px solid #ccc;
+  border-radius: 6px;
 }
 button {
   padding: 0.5rem 1rem;
-  background: #ffe9d5;
+  margin: 0.3rem;
+  background-color: #ffe9d5;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
 }
 .grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
 }
 .card {
-  width: 300px;
-  background: #fffefc;
-  border-radius: 10px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.05);
+  background-color: #fffdf8dd;
+  border: 1px solid #f0e6dc;
+  border-radius: 12px;
   padding: 1rem;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
   text-align: center;
 }
 .card img {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 10px;
 }
 .caption {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #444;
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+  color: #555;
 }
 .caption[contenteditable] {
-  background: #f9f5f2;
-  border: 1px dashed #ccc;
+  outline: 1px dashed #ccc;
+  padding: 4px;
   border-radius: 6px;
-  padding: 5px;
+  background: #f9f5f2;
 }
