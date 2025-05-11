@@ -46,6 +46,9 @@ uploadInput.addEventListener('change', async (event) => {
 
         const img = document.createElement('img');
         img.src = e.target.result;
+        img.style.maxHeight = "320px";
+        img.style.width = "100%";
+        img.style.objectFit = "contain";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -85,14 +88,12 @@ function downloadPDF() {
   albumContent.style.width = "100%";
   albumContent.style.padding = "1rem";
 
-  // 이미지 사이즈 강제 고정
   albumContent.querySelectorAll("img").forEach(img => {
     img.style.maxHeight = "320px";
     img.style.width = "100%";
     img.style.objectFit = "contain";
   });
 
-  // 캡션 줄 바꿈 방지 제거
   albumContent.querySelectorAll(".caption").forEach(caption => {
     caption.style.whiteSpace = "normal";
   });
@@ -116,7 +117,6 @@ function downloadPDF() {
     document.body.removeChild(wrapper);
   });
 }
-
 
 function copyShareLink() {
   const link = window.location.href;
