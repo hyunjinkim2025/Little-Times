@@ -1,62 +1,64 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background: linear-gradient(to bottom, #fdfcf9, #f5f2ec);
+  padding: 2rem;
   color: #3b3a36;
+}
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 .header h1 {
   font-size: 2rem;
   color: #8a6d54;
-  text-align: center;
-  margin-bottom: 1.2rem;
 }
-input, button {
-  font-family: inherit;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.input-group {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+input[type="file"], input[type="text"] {
+  margin: 0.5rem;
   padding: 0.4rem 0.8rem;
-  margin: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 button {
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
   background-color: #ffe9d5;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
 }
-
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* ✅ 2단 */
-  gap: 2rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 .card {
-  background-color: #fff8f4;
-  border: 1px solid #e0dcd9;
+  background-color: #fffdf8dd;
+  border: 1px solid #f0e6dc;
   border-radius: 12px;
-  padding: 1.2rem;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.03);
-  transition: transform 0.2s ease;
-}
-.card:hover {
-  transform: scale(1.01);
+  padding: 1rem;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+  text-align: center;
 }
 .card img {
   width: 100%;
-  height: auto;
-  max-height: 240px;
-  object-fit: cover;
+  max-height: 320px;
+  object-fit: contain;
   border-radius: 10px;
 }
 .caption {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 0.9rem;
-  color: #665e57;
   margin-top: 0.7rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  color: #555;
 }
 .caption[contenteditable] {
-  background-color: #f8f2ec;
-  border-radius: 6px;
+  outline: 1px dashed #ccc;
   padding: 4px;
-  outline: none;
+  border-radius: 6px;
+  background: #f9f5f2;
 }
 
