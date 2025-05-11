@@ -44,9 +44,6 @@ uploadInput.addEventListener('change', async (event) => {
 
         const img = document.createElement('img');
         img.src = e.target.result;
-        img.style.maxHeight = "320px";
-        img.style.width = "100%";
-        img.style.objectFit = "contain";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -81,45 +78,30 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const albumOriginal = document.getElementById("album");
-  const clone = albumOriginal.cloneNode(true);
-  clone.style.width = "800px";
-  clone.style.padding = "20px";
-  clone.style.background = "#ffffff";
+  html2canvas(document.getElementById('album'), {
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY
+  }).then(canvas => {
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
 
-  // 스타일 일괄 적용
-  clone.querySelectorAll("img").forEach(img => {
-    img.style.width = "100%";
-    img.style.height = "auto";
-    img.style.maxHeight = "auto";
-    img.style.objectFit = "contain";
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save('리틀타임즈_성장앨범.pdf');
   });
-
-  clone.querySelectorAll(".card").forEach(card => {
-    card.style.pageBreakInside = "avoid";
-    card.style.marginBottom = "20px";
-  });
-
-  const container = document.createElement("div");
-  container.appendChild(clone);
-  document.body.appendChild(container);
-
-  html2pdf()
-    .set({
-      margin: 0,
-      filename: "리틀타임즈_성장앨범.pdf",
-      image: { type: "jpeg", quality: 1 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        scrollY: 0
-      },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    })
-    .from(clone)
-    .save()
-    .then(() => {
-      document.body.removeChild(container);
-    });
 }
-
