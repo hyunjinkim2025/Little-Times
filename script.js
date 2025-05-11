@@ -46,9 +46,6 @@ uploadInput.addEventListener('change', async (event) => {
 
         const img = document.createElement('img');
         img.src = e.target.result;
-        img.style.maxHeight = "320px";
-        img.style.width = "100%";
-        img.style.objectFit = "contain";
 
         const caption = document.createElement('div');
         caption.className = 'caption';
@@ -83,17 +80,39 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
+  const printArea = document.createElement("div");
+  printArea.style.padding = "1rem";
+  printArea.innerHTML = document.getElementById("album").innerHTML;
+  document.body.appendChild(printArea);
+
+  html2pdf().set({
+    margin: 0.3,
+    filename: '리틀타임즈_성장앨범.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }).from(printArea).save().then(() => {
+    document.body.removeChild(printArea);
+  });
+}
+function downloadPDF() {
   const albumContent = document.getElementById("album").cloneNode(true);
   albumContent.style.display = "block";
   albumContent.style.width = "100%";
   albumContent.style.padding = "1rem";
 
+  // 이미지 사이즈 강제 고정
   albumContent.querySelectorAll("img").forEach(img => {
     img.style.maxHeight = "320px";
     img.style.width = "100%";
     img.style.objectFit = "contain";
   });
 
+  // 캡션 줄 바꿈 방지 제거
   albumContent.querySelectorAll(".caption").forEach(caption => {
     caption.style.whiteSpace = "normal";
   });
