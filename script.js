@@ -13,23 +13,9 @@ async function loadModels() {
   await faceapi.nets.ageGenderNet.loadFromUri('./models');
 }
 
-function generateCaption(age) {
-  const rounded = Math.round(age);
-  const templates = [
-    `[#단계] 오늘도 웃음이 가득한 날`,
-    `[#단계] 작은 기적이 피어난 하루`,
-    `[#단계] 맑은 눈망울, 깊은 감성`,
-    `[#단계] 환한 웃음 속 따스한 기억`,
-    `[#단계] 매일 자라는 너의 하루`
-  ];
-  const text = templates[Math.floor(Math.random() * templates.length)];
-  return text.replace('#단계', `${rounded}세 추정`);
-}
-
 uploadInput.addEventListener('change', async (event) => {
   await loadModels();
   const files = Array.from(event.target.files);
-
   if (files.length > 30) {
     alert("사진은 최대 30장까지 업로드할 수 있어요.");
     return;
@@ -52,7 +38,7 @@ uploadInput.addEventListener('change', async (event) => {
   imageAges
     .filter(Boolean)
     .sort((a, b) => a.age - b.age)
-    .forEach(({ file, age }) => {
+    .forEach(({ file }) => {
       const reader = new FileReader();
       reader.onload = function(e) {
         const card = document.createElement('div');
@@ -63,7 +49,7 @@ uploadInput.addEventListener('change', async (event) => {
 
         const caption = document.createElement('div');
         caption.className = 'caption';
-        caption.innerText = generateCaption(age);
+        caption.innerText = "사진의 추억을 자유롭게 기록해보세요.";
         caption.setAttribute("contenteditable", "true");
 
         card.appendChild(img);
@@ -83,21 +69,20 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
-  const element = document.body;
+  const element = document.body.cloneNode(true);
+  element.querySelectorAll("input, button").forEach(el => el.remove());
   html2pdf().set({
     margin: 0.2,
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
       scale: 2,
-      scrollY: 0, // 스크롤로 인한 위치 왜곡 방지
+      scrollY: 0,
       useCORS: true
     },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   }).from(element).save();
 }
-
-
 
 function copyShareLink() {
   const link = window.location.href;
@@ -105,5 +90,3 @@ function copyShareLink() {
     .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
     .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
-
-
