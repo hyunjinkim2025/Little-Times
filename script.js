@@ -97,38 +97,40 @@ function loadImage(file) {
 
 // PDF 다운로드
 function downloadPDF() {
-  html2canvas(document.getElementById('album'), {
-    scale: 2,
-    useCORS: true,
-    scrollY: -window.scrollY
-  }).then(canvas => {
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+  const cards = document.querySelectorAll('.card');
+  const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+  let count = 0;
 
-    const pageWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-
-    const imgWidth = pageWidth;
-    const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-      position -= pageHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+  function captureCard(index) {
+    if (index >= cards.length) {
+      pdf.save('리틀타임즈_성장앨범.pdf');
+      return;
     }
 
-    pdf.save('리틀타임즈_성장앨범.pdf');
-  });
+    const card = cards[index];
+    html2canvas(card, {
+      scale: 2,
+      useCORS: true
+    }).then(canvas => {
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      const imgWidth = pageWidth;
+      const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
+
+      if (index !== 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+      captureCard(index + 1); // 다음 카드로 재귀 호출
+    });
+  }
+
+  captureCard(0);
 }
+
 
 
 // 공유 링크 복사
