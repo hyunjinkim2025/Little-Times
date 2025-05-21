@@ -104,8 +104,9 @@ function downloadPDF() {
   const cardContainer = document.createElement("div");
   cardContainer.style.display = "flex";
   cardContainer.style.flexWrap = "wrap";
-  cardContainer.style.justifyContent = "center";
-  cardContainer.style.gap = "10mm";
+  cardContainer.style.justifyContent = "space-around";
+  cardContainer.style.alignItems = "flex-start";
+  cardContainer.style.gap = "1rem";
   cardContainer.style.padding = "10mm";
   cardContainer.style.width = "100%";
   cardContainer.style.boxSizing = "border-box";
@@ -113,16 +114,16 @@ function downloadPDF() {
   const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
     const cloned = card.cloneNode(true);
+
     cloned.style.pageBreakInside = "avoid";
     cloned.style.breakInside = "avoid";
     cloned.style.overflow = "hidden";
-    cloned.style.width = "180px";
+    cloned.style.width = "260px";
+    cloned.style.margin = "1rem";
 
-    // 카드에도 같은 배경 적용
-    cloned.style.backgroundImage = "url('./images/bg.png')";
-    cloned.style.backgroundRepeat = "repeat";
-    cloned.style.backgroundSize = "cover";
-    cloned.style.backgroundColor = "rgba(255, 255, 255, 0.0001)";
+    // ✅ 카드 내부 배경 제거
+    cloned.style.backgroundImage = "none";
+    cloned.style.backgroundColor = "rgba(255, 255, 255, 0)";
 
     const img = cloned.querySelector("img");
     if (img) {
