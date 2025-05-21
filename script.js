@@ -3,6 +3,7 @@ const album = document.getElementById('album');
 const title = document.getElementById('albumTitle');
 const childNameInput = document.getElementById('childName');
 
+// 앨범 제목 실시간 반영
 childNameInput.addEventListener('input', () => {
   const name = childNameInput.value.trim();
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
@@ -29,9 +30,12 @@ uploadInput.addEventListener('change', async (event) => {
         alert(`${file.name}은(는) 5MB를 초과하여 업로드할 수 없어요.`);
         return null;
       }
+
       const img = await loadImage(file);
-      const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-      return result ? { file, age: result.age } : null;
+      const results = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+      if (!results.length) return null;
+      const youngest = results.reduce((min, r) => r.age < min.age ? r : min, results[0]);
+      return { file, age: youngest.age };
     })
   );
 
@@ -112,6 +116,7 @@ function downloadPDF() {
     const cloned = card.cloneNode(true);
     cloned.style.pageBreakInside = "avoid";
     cloned.style.width = "180px";
+    cloned.style.backgroundColor = "transparent";
     const img = cloned.querySelector("img");
     if (img) {
       img.style.maxWidth = "100%";
@@ -130,6 +135,7 @@ function downloadPDF() {
     html2canvas: {
       scale: 2,
       useCORS: true,
+      allowTaint: false,
       scrollY: 0
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -145,4 +151,3 @@ function copyShareLink() {
     .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
     .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
-
