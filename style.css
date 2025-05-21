@@ -1,6 +1,7 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: #fdfcf9;
+  background: url('A_seamless_digital_illustration_background_feature.png') repeat;
+  background-size: contain;
   padding: 2rem;
   margin: 0;
 }
@@ -56,40 +57,3 @@ button {
   padding: 5px;
 }
 
-@media print {
-  body {
-    padding: 0.5rem;
-  }
-  .header {
-    margin-bottom: 1rem;
-  }
-  .input-group {
-    display: none;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem;
-  }
-  .card {
-    width: 100%;
-    max-width: 200px;
-    padding: 0.5rem;
-    box-shadow: none;
-    break-inside: avoid;
-  }
-  .card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  .caption {
-    margin-top: 0.2rem;
-    font-size: 0.8rem;
-    color: #000;
-    background: none;
-    border: none;
-    padding: 0;
-  }
-}
