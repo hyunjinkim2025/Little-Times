@@ -116,7 +116,13 @@ function downloadPDF() {
     const cloned = card.cloneNode(true);
     cloned.style.pageBreakInside = "avoid";
     cloned.style.width = "180px";
-    cloned.style.backgroundColor = "transparent";
+
+    // ✅ 배경 이미지 + 반투명 배경 설정
+    cloned.style.backgroundImage = "url('https://github.com/hyunjinkim2025/little-times/blob/main/images/bg.png?raw=true')";
+    cloned.style.backgroundRepeat = "repeat";
+    cloned.style.backgroundSize = "cover";
+    cloned.style.backgroundColor = "rgba(255, 255, 255, 0.0001)";
+
     const img = cloned.querySelector("img");
     if (img) {
       img.style.maxWidth = "100%";
