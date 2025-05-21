@@ -80,9 +80,20 @@ function loadImage(file) {
 }
 
 function downloadPDF() {
+  const originalAlbumContent = document.getElementById("album").innerHTML;
   const printArea = document.createElement("div");
-  printArea.style.padding = "1rem";
-  printArea.innerHTML = document.getElementById("album").innerHTML;
+  
+  const tempAlbum = document.createElement("div");
+  tempAlbum.innerHTML = originalAlbumContent;
+  const captions = tempAlbum.querySelectorAll('.caption[contenteditable="true"]');
+  captions.forEach(caption => {
+    caption.removeAttribute('contenteditable');
+    if (caption.innerText.trim() === "사진의 추억을 자유롭게 기록해보세요." || caption.innerText.trim() === "") {
+        caption.innerText = "";
+    }
+  });
+  printArea.innerHTML = tempAlbum.innerHTML;
+
   document.body.appendChild(printArea);
 
   html2pdf().set({
@@ -92,7 +103,9 @@ function downloadPDF() {
     html2canvas: {
       scale: 2,
       useCORS: true,
-      scrollY: 0
+      scrollY: 0,
+      width: printArea.offsetWidth,
+      windowWidth: printArea.scrollWidth
     },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   }).from(printArea).save().then(() => {
