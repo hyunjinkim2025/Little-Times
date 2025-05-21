@@ -82,21 +82,44 @@ function loadImage(file) {
 function downloadPDF() {
   const printArea = document.createElement("div");
   printArea.style.width = "210mm";
-  printArea.style.padding = "1rem";
-  printArea.innerHTML = document.getElementById("album").innerHTML;
+  printArea.style.minHeight = "297mm";
+  printArea.style.padding = "1.5rem";
+  printArea.style.backgroundImage = "url('A_seamless_digital_illustration_background_feature.png')";
+  printArea.style.backgroundRepeat = "repeat";
+  printArea.style.backgroundSize = "contain";
+  printArea.style.display = "flex";
+  printArea.style.flexDirection = "column";
+  printArea.style.alignItems = "center";
 
-  printArea.querySelectorAll("img").forEach(img => {
-    img.style.maxWidth = "100%";
-    img.style.height = "auto";
-  });
-  printArea.querySelectorAll(".card").forEach(card => {
-    card.style.pageBreakInside = "avoid";
+  const albumTitle = document.getElementById("albumTitle").textContent;
+  const titleElement = document.createElement("h2");
+  titleElement.textContent = albumTitle;
+  titleElement.style.textAlign = "center";
+  titleElement.style.marginBottom = "2rem";
+  printArea.appendChild(titleElement);
+
+  const cards = document.querySelectorAll(".card");
+  const cardContainer = document.createElement("div");
+  cardContainer.style.display = "flex";
+  cardContainer.style.flexWrap = "wrap";
+  cardContainer.style.justifyContent = "center";
+  cardContainer.style.gap = "1.5rem";
+  cardContainer.style.width = "100%";
+
+  cards.forEach(card => {
+    const cloned = card.cloneNode(true);
+    cloned.style.pageBreakInside = "avoid";
+    cloned.style.width = "180px";
+    cloned.querySelector("img").style.maxWidth = "100%";
+    cloned.querySelector("img").style.height = "auto";
+    cardContainer.appendChild(cloned);
   });
 
+  printArea.appendChild(cardContainer);
   document.body.appendChild(printArea);
 
   html2pdf().set({
-    margin: 0.3,
+    margin: [10, 10, 10, 10],
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
