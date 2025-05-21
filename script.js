@@ -3,16 +3,19 @@ const album = document.getElementById('album');
 const title = document.getElementById('albumTitle');
 const childNameInput = document.getElementById('childName');
 
+// 앨범 제목 실시간 반영
 childNameInput.addEventListener('input', () => {
   const name = childNameInput.value.trim();
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
 });
 
+// 얼굴 인식 모델 로딩
 async function loadModels() {
   await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
   await faceapi.nets.ageGenderNet.loadFromUri('./models');
 }
 
+// 이미지 업로드 처리
 uploadInput.addEventListener('change', async (event) => {
   await loadModels();
   const files = Array.from(event.target.files);
@@ -79,14 +82,16 @@ function loadImage(file) {
   });
 }
 
+// PDF 다운로드
 function downloadPDF() {
   const printArea = document.createElement("div");
   printArea.style.width = "210mm";
   printArea.style.minHeight = "297mm";
-  printArea.style.padding = "1.5rem";
-  printArea.style.backgroundImage = "url('A_seamless_digital_illustration_background_feature.png')";
+  printArea.style.padding = "10mm";
+  printArea.style.boxSizing = "border-box";
+  printArea.style.backgroundImage = "url('./images/bg.png')";
   printArea.style.backgroundRepeat = "repeat";
-  printArea.style.backgroundSize = "contain";
+  printArea.style.backgroundSize = "cover";
   printArea.style.display = "flex";
   printArea.style.flexDirection = "column";
   printArea.style.alignItems = "center";
@@ -95,23 +100,26 @@ function downloadPDF() {
   const titleElement = document.createElement("h2");
   titleElement.textContent = albumTitle;
   titleElement.style.textAlign = "center";
-  titleElement.style.marginBottom = "2rem";
+  titleElement.style.marginBottom = "1.5rem";
   printArea.appendChild(titleElement);
 
-  const cards = document.querySelectorAll(".card");
   const cardContainer = document.createElement("div");
   cardContainer.style.display = "flex";
   cardContainer.style.flexWrap = "wrap";
   cardContainer.style.justifyContent = "center";
-  cardContainer.style.gap = "1.5rem";
+  cardContainer.style.gap = "1rem";
   cardContainer.style.width = "100%";
 
+  const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
     const cloned = card.cloneNode(true);
     cloned.style.pageBreakInside = "avoid";
     cloned.style.width = "180px";
-    cloned.querySelector("img").style.maxWidth = "100%";
-    cloned.querySelector("img").style.height = "auto";
+    const img = cloned.querySelector("img");
+    if (img) {
+      img.style.maxWidth = "100%";
+      img.style.height = "auto";
+    }
     cardContainer.appendChild(cloned);
   });
 
@@ -119,7 +127,7 @@ function downloadPDF() {
   document.body.appendChild(printArea);
 
   html2pdf().set({
-    margin: [10, 10, 10, 10],
+    margin: 0,
     filename: '리틀타임즈_성장앨범.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -134,6 +142,7 @@ function downloadPDF() {
   });
 }
 
+// 공유 링크 복사
 function copyShareLink() {
   const link = window.location.href;
   navigator.clipboard.writeText(link)
