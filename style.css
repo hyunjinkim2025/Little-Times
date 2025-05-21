@@ -34,17 +34,23 @@ button {
 }
 .card {
   width: 300px;
-  background: #fffefc;
+  background-color: transparent; /* ✅ 배경 제거 */
   border-radius: 10px;
   box-shadow: 0 0 6px rgba(0,0,0,0.05);
   padding: 1rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .card img {
-  width: 100%;
+  max-width: 100%;
   height: auto;
+  object-fit: contain;
   border-radius: 8px;
 }
+
 .caption {
   margin-top: 0.5rem;
   font-size: 0.9rem;
