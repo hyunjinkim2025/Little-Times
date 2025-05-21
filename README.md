@@ -1,1 +1,1 @@
-# Little Times
+# little-times
