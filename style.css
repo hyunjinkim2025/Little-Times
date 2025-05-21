@@ -1,6 +1,7 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: url('https://github.com/hyunjinkim2025/little-times/blob/main/images/bg.png?raw=true') repeat;
+  background-image: url('./images/bg.png');
+  background-repeat: repeat;
   background-size: cover;
   padding: 2rem;
   margin: 0;
