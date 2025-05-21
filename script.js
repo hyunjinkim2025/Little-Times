@@ -3,7 +3,6 @@ const album = document.getElementById('album');
 const title = document.getElementById('albumTitle');
 const childNameInput = document.getElementById('childName');
 
-// 앨범 제목 실시간 반영
 childNameInput.addEventListener('input', () => {
   const name = childNameInput.value.trim();
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
@@ -88,7 +87,7 @@ function downloadPDF() {
   printArea.style.width = "100%";
   printArea.style.minHeight = "297mm";
   printArea.style.boxSizing = "border-box";
-  printArea.style.backgroundImage = "url('https://github.com/hyunjinkim2025/little-times/blob/main/images/bg.png?raw=true')";
+  printArea.style.backgroundImage = "url('./images/bg.png')";
   printArea.style.backgroundRepeat = "repeat";
   printArea.style.backgroundSize = "cover";
   printArea.style.display = "flex";
@@ -115,10 +114,12 @@ function downloadPDF() {
   cards.forEach(card => {
     const cloned = card.cloneNode(true);
     cloned.style.pageBreakInside = "avoid";
+    cloned.style.breakInside = "avoid";
+    cloned.style.overflow = "hidden";
     cloned.style.width = "180px";
 
-    // ✅ 배경 이미지 + 반투명 배경 설정
-    cloned.style.backgroundImage = "url('https://github.com/hyunjinkim2025/little-times/blob/main/images/bg.png?raw=true')";
+    // 카드에도 같은 배경 적용
+    cloned.style.backgroundImage = "url('./images/bg.png')";
     cloned.style.backgroundRepeat = "repeat";
     cloned.style.backgroundSize = "cover";
     cloned.style.backgroundColor = "rgba(255, 255, 255, 0.0001)";
@@ -145,7 +146,10 @@ function downloadPDF() {
       scrollY: 0
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    pagebreak: {
+      mode: ['avoid-all', 'css', 'legacy'],
+      before: ['.card']
+    }
   }).from(printArea).save().then(() => {
     document.body.removeChild(printArea);
   });
@@ -157,3 +161,4 @@ function copyShareLink() {
     .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
     .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
+
