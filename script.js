@@ -87,9 +87,6 @@ function downloadPDF() {
   printArea.style.width = "100%";
   printArea.style.minHeight = "297mm";
   printArea.style.boxSizing = "border-box";
-  printArea.style.backgroundImage = "url('./images/bg.png')";
-  printArea.style.backgroundRepeat = "repeat";
-  printArea.style.backgroundSize = "cover";
   printArea.style.display = "flex";
   printArea.style.flexDirection = "column";
   printArea.style.alignItems = "center";
@@ -114,14 +111,11 @@ function downloadPDF() {
   const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
     const cloned = card.cloneNode(true);
-
     cloned.style.pageBreakInside = "avoid";
     cloned.style.breakInside = "avoid";
     cloned.style.overflow = "hidden";
     cloned.style.width = "260px";
     cloned.style.margin = "1rem";
-
-    // ✅ 카드 내부 배경 제거
     cloned.style.backgroundImage = "none";
     cloned.style.backgroundColor = "rgba(255, 255, 255, 0)";
 
@@ -151,7 +145,19 @@ function downloadPDF() {
       mode: ['avoid-all', 'css', 'legacy'],
       before: ['.card']
     }
-  }).from(printArea).save().then(() => {
+  })
+  .from(printArea)
+  .toPdf()
+  .get('pdf')
+  .then(function (pdf) {
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.addImage('./images/bg.png', 'PNG', 0, 0, 210, 297); // A4 사이즈 배경
+    }
+  })
+  .save()
+  .then(() => {
     document.body.removeChild(printArea);
   });
 }
