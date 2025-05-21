@@ -3,19 +3,16 @@ const album = document.getElementById('album');
 const title = document.getElementById('albumTitle');
 const childNameInput = document.getElementById('childName');
 
-// 앨범 제목 실시간 반영
 childNameInput.addEventListener('input', () => {
   const name = childNameInput.value.trim();
   title.textContent = name ? `리틀타임즈, ${name}의 성장앨범` : '리틀타임즈, 아이의 성장앨범';
 });
 
-// 얼굴 인식 모델 로딩
 async function loadModels() {
   await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
   await faceapi.nets.ageGenderNet.loadFromUri('./models');
 }
 
-// 이미지 업로드 처리
 uploadInput.addEventListener('change', async (event) => {
   await loadModels();
   const files = Array.from(event.target.files);
@@ -82,14 +79,12 @@ function loadImage(file) {
   });
 }
 
-// PDF 다운로드
 function downloadPDF() {
   const printArea = document.createElement("div");
-  printArea.style.width = "210mm";
+  printArea.style.width = "100%";
   printArea.style.minHeight = "297mm";
-  printArea.style.padding = "10mm";
   printArea.style.boxSizing = "border-box";
-  printArea.style.backgroundImage = "url('./images/bg.png')";
+  printArea.style.backgroundImage = "url('https://github.com/hyunjinkim2025/little-times/blob/main/images/bg.png?raw=true')";
   printArea.style.backgroundRepeat = "repeat";
   printArea.style.backgroundSize = "cover";
   printArea.style.display = "flex";
@@ -100,15 +95,17 @@ function downloadPDF() {
   const titleElement = document.createElement("h2");
   titleElement.textContent = albumTitle;
   titleElement.style.textAlign = "center";
-  titleElement.style.marginBottom = "1.5rem";
+  titleElement.style.margin = "20px";
   printArea.appendChild(titleElement);
 
   const cardContainer = document.createElement("div");
   cardContainer.style.display = "flex";
   cardContainer.style.flexWrap = "wrap";
   cardContainer.style.justifyContent = "center";
-  cardContainer.style.gap = "1rem";
+  cardContainer.style.gap = "10mm";
+  cardContainer.style.padding = "10mm";
   cardContainer.style.width = "100%";
+  cardContainer.style.boxSizing = "border-box";
 
   const cards = document.querySelectorAll(".card");
   cards.forEach(card => {
@@ -142,10 +139,10 @@ function downloadPDF() {
   });
 }
 
-// 공유 링크 복사
 function copyShareLink() {
   const link = window.location.href;
   navigator.clipboard.writeText(link)
     .then(() => alert("공유 링크가 복사되었습니다! 친구에게 붙여넣어 전달해 보세요."))
     .catch(() => alert("복사에 실패했습니다. 직접 복사해 주세요."));
 }
+
