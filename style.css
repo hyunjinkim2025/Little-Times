@@ -34,7 +34,7 @@ button {
 }
 .card {
   width: 300px;
-  background-color: transparent; /* ✅ 배경 제거 */
+  background-color: transparent; 
   border-radius: 10px;
   box-shadow: 0 0 6px rgba(0,0,0,0.05);
   padding: 1rem;
