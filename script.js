@@ -89,7 +89,7 @@ function downloadPDF() {
   printArea.style.boxSizing = "border-box";
   printArea.style.backgroundImage = "url('./images/bg.png')";
   printArea.style.backgroundRepeat = "repeat";
-  printArea.style.backgroundSize = "auto"; // 💡 패턴 이미지처럼 반복
+  printArea.style.backgroundSize = "auto";
   printArea.style.display = "flex";
   printArea.style.flexDirection = "column";
   printArea.style.alignItems = "center";
@@ -126,6 +126,18 @@ function downloadPDF() {
     if (img) {
       img.style.maxWidth = "100%";
       img.style.height = "auto";
+    }
+
+    const caption = cloned.querySelector(".caption");
+    if (caption) {
+      caption.removeAttribute("contenteditable");
+      caption.style.background = "#f9f5f2";
+      caption.style.border = "1px dashed #ccc";
+      caption.style.borderRadius = "6px";
+      caption.style.padding = "5px";
+      caption.style.color = "#444";
+      caption.style.fontSize = "0.9rem";
+      caption.style.marginTop = "0.5rem";
     }
 
     cardContainer.appendChild(cloned);
